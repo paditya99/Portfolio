@@ -1,0 +1,146 @@
+.contact { position: relative; padding: clamp(3rem, 8vw, 6rem) 0 2rem; }
+
+.band { position: absolute; inset: 0; overflow: hidden; z-index: 0; opacity: .5; }
+.band::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--bg) 0%, transparent 30%, transparent 60%, var(--bg) 100%),
+              linear-gradient(90deg, var(--bg) 0%, transparent 40%, transparent 60%, var(--bg) 100%);
+}
+.band img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
+  filter: grayscale(.65) contrast(1.05) saturate(1.1);
+  mix-blend-mode: luminosity;
+}
+
+.panel { position: relative; z-index: 1; }
+
+.term {
+  border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  background: var(--bg-glass); backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-2);
+  /* fills the content column; the old 760px cap left the right half of the
+     page empty and forced prose into very short, ragged lines */
+}
+.term-bar {
+  display: flex; align-items: center; gap: .45rem;
+  padding: .6rem .85rem; border-bottom: 1px solid var(--border); background: var(--bg-3);
+}
+.term-title { margin-left: .4rem; font-size: .72rem; color: var(--text-3); }
+
+.term-body { padding: 1.1rem 1.2rem 1.3rem; font-size: clamp(.8rem, 1.6vw, .9rem); }
+.tl { line-height: 1.9; color: var(--text-2); }
+.prompt { color: var(--green); } .path { color: var(--blue); }
+.out { color: var(--text-2); } .ok { color: var(--green); margin-right: .3rem; }
+
+.links { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin: .8rem 0 1rem; }
+.lk {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .7rem .9rem; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-2);
+  transition: transform .25s var(--ease-out), border-color .25s var(--ease), background .25s var(--ease);
+}
+.lk:hover { transform: translateX(4px); border-color: var(--accent); }
+.lk-k { color: var(--amber); font-size: .78rem; min-width: 4.5rem; }
+.lk-v { color: var(--text); font-family: var(--font-body); font-size: .9rem; }
+.arw { margin-left: auto; color: var(--text-3); transition: transform .25s var(--ease-out), color .25s; }
+.lk:hover .arw { transform: translateX(3px); color: var(--accent); }
+.lk.primary { border-color: color-mix(in oklab, var(--accent) 45%, var(--border)); background: color-mix(in oklab, var(--accent) 8%, var(--bg-2)); }
+
+/* ---- live terminal ---- */
+
+/* capped so a long `help` scrolls inside the window instead of shoving the
+   page down; grows naturally until it hits the cap */
+.term-log { max-height: 22rem; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
+/* blank strings in a command's output are paragraph breaks — keep their height */
+.term-log .tl:empty { min-height: 1em; }
+.term-log:empty { display: none; }
+.tl-err { color: var(--coral); }
+.tl-dim { color: var(--text-3); white-space: pre-wrap; }
+/* `out` keeps its padded columns (help, skills) — hence pre-wrap */
+.term-log .out { white-space: pre-wrap; }
+/* prose reflows instead, and is capped so it stays readable now that the
+   terminal is full width — ~90ch, not the ~130ch the box would otherwise allow */
+.term-log .tl-text { white-space: normal; max-width: 90ch; }
+
+.term-input {
+  display: flex; align-items: center; gap: .35rem;
+  line-height: 1.9; color: var(--text-2);
+}
+.term-input .prompt { cursor: text; }
+
+/* the field wraps input + ghost so they can be layered */
+.term-field { position: relative; flex: 1; min-width: 0; display: block; }
+
+.term-box {
+  position: relative; z-index: 1;
+  width: 100%;
+  background: none; border: none; outline: none; padding: 0 0 0 .2rem;
+  font: inherit; color: var(--text);
+  caret-color: var(--accent);
+}
+
+/* Ghost suffix. Same font, size and padding as the input, so the hidden copy
+   of the typed text lines the suffix up exactly under the caret. Monospace
+   makes this reliable; it is decorative and hidden from assistive tech. */
+.term-ghost {
+  position: absolute; inset: 0; z-index: 0;
+  padding-left: .2rem;
+  font: inherit; white-space: pre; pointer-events: none;
+  overflow: hidden;
+}
+.term-ghost .g-typed { visibility: hidden; }
+.term-ghost .g-rest { color: var(--text-3); }
+
+.ghost-key {
+  flex: none; font-size: .66rem; color: var(--text-3);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: .05rem .3rem; opacity: .8;
+}
+
+.term-sugg { display: flex; flex-wrap: wrap; gap: .35rem; margin: .35rem 0 0 1.2rem; }
+.sugg {
+  font-family: var(--font-mono); font-size: .72rem; color: var(--text-2);
+  border: 1px solid var(--border); border-radius: 5px;
+  padding: .12rem .45rem; background: var(--bg-2);
+  transition: color .15s var(--ease), border-color .15s var(--ease), background .15s var(--ease);
+}
+.sugg:hover { color: var(--accent); border-color: var(--accent); background: color-mix(in oklab, var(--accent) 10%, transparent); }
+/* the placeholder carries the affordance — a blinking caret alone reads as
+   decoration on this site, which already uses one ornamentally */
+.term-box::placeholder { color: var(--text-3); opacity: 1; }
+.term-box:focus::placeholder { opacity: .55; }
+
+.term-chips { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-top: .9rem; }
+.chip-hint { font-size: .72rem; color: var(--text-3); margin-right: .1rem; }
+.term-chip {
+  font-family: var(--font-mono); font-size: .74rem; color: var(--text-2);
+  border: 1px dashed color-mix(in oklab, var(--accent) 34%, var(--border));
+  border-radius: 6px; padding: .2rem .55rem; background: var(--bg-2);
+  transition: color .2s var(--ease), border-color .2s var(--ease),
+              background .2s var(--ease), transform .2s var(--ease-out);
+}
+.term-chip:hover {
+  color: var(--accent); transform: translateY(-1px);
+  border-style: solid; border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+}
+
+/* the one chip a recruiter is actually looking for — filled, so the eye lands
+   on it before the rest of the row */
+.term-chip.primary {
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border: 1px solid transparent;
+  font-weight: 500;
+}
+.term-chip.primary:hover {
+  color: var(--accent-contrast);
+  background: color-mix(in oklab, var(--accent) 88%, var(--text));
+  border-color: transparent;
+  box-shadow: 0 6px 18px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+@media (max-width: 560px) {
+  .links { grid-template-columns: 1fr; }
+  .term-log { max-height: 13rem; }
+}

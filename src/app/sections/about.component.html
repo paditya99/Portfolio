@@ -1,0 +1,55 @@
+<section id="about" class="wrap wrap-first">
+  <app-section-header id="about" appReveal />
+
+  <div class="about-grid">
+    <article class="readme" appReveal [revealDelay]="80">
+      <p class="lead">
+        I'm a <span class="accent">backend engineer</span>. I work on the
+        unglamorous middle of software — the services, APIs, queues and schemas
+        that a product actually runs on.
+      </p>
+      <p>
+        Most of my week goes into the core of a mortgage lending and brokerage
+        platform: building REST APIs across its loan origination and back-office
+        services in <span class="accent">Node.js and NestJS</span>, integrating
+        flows like documents, e-signature and third-party data orders, working
+        through bugs that come in from Jira, and making slow endpoints faster.
+        It's a big multi-tenant codebase, so a lot of the job is extending
+        something that already exists without breaking the parts around it.
+      </p>
+      <p>
+        The other slice is applied AI on the same platform — guideline PDFs
+        turned into structured underwriting rules on
+        <span class="accent">AWS Bedrock</span>, and a <span class="accent">RAG</span>
+        assistant that answers guideline questions with a citation. It's team-built;
+        I've worked on the services around it and on making its answers better. What
+        I've taken from it is that the model is the easy part — the engineering is in
+        making the output predictable enough to trust.
+      </p>
+      <p>
+        Either way I'm rarely working alone. Most of what I ship touches
+        front-end, QA, DevOps or design before it's done, and the part that
+        actually decides whether it lands on time is how well that conversation
+        goes — asking early, flagging blockers before they're urgent, and being
+        easy to hand work to.
+      </p>
+      <p class="muted">
+        Before this I spent two years on banking systems — a loan disbursement
+        platform in Java and Spring Boot, severity-1 defects against a clock, and
+        security findings to close before release. That work taught me to care
+        about the boring parts: honest validation, and knowing exactly what
+        changed between two runs.
+      </p>
+    </article>
+
+    <aside class="stats" appReveal [revealDelay]="160">
+      @for (s of stats; track s.label) {
+        <div class="stat">
+          <span class="stat-val" [appCountUp]="s.value">{{ s.value }}</span>
+          <span class="stat-label">{{ s.label }}</span>
+          <span class="stat-hint mono">{{ s.hint }}</span>
+        </div>
+      }
+    </aside>
+  </div>
+</section>

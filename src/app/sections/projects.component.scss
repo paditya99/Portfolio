@@ -1,0 +1,85 @@
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+.card.featured { grid-column: 1 / -1; }
+
+.card { position: relative; border-radius: 16px; }
+.glow {
+  position: absolute; inset: 0; border-radius: 16px; opacity: 0;
+  transition: opacity .4s var(--ease); pointer-events: none;
+  background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 0%),
+    color-mix(in oklab, var(--accent) 22%, transparent), transparent 60%);
+}
+.card:hover .glow { opacity: 1; }
+
+/* --tx/--ty are set on pointermove (-1..1 from the card centre) and reset on
+   pointerleave, so the tilt settles flat without a second transition rule */
+.card { perspective: 900px; }
+.card-in {
+  position: relative; height: 100%;
+  border: 1px solid var(--border); border-radius: 16px;
+  background: var(--bg-2); padding: clamp(1.2rem, 3vw, 1.7rem);
+  transform-style: preserve-3d;
+  transition: transform .35s var(--ease-out), border-color .35s var(--ease), box-shadow .35s var(--ease);
+}
+.card:hover .card-in {
+  transform:
+    translateY(-4px)
+    rotateX(calc(var(--ty, 0) * -3deg))
+    rotateY(calc(var(--tx, 0) * 3deg));
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  box-shadow: var(--shadow-2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card:hover .card-in { transform: none; }
+}
+/* coarse pointers get no tilt — there is no hover to drive it */
+@media (hover: none) {
+  .card:hover .card-in { transform: none; }
+}
+.featured .card-in {
+  background:
+    radial-gradient(130% 130% at 100% 0%, color-mix(in oklab, var(--amber) 8%, transparent), transparent 50%),
+    var(--bg-2);
+}
+
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-bottom: .5rem; }
+.kind { font-size: .74rem; color: var(--teal); letter-spacing: .02em; }
+.badge {
+  font-size: .68rem; color: var(--accent); padding: .12rem .5rem; border-radius: 20px;
+  border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border));
+}
+.card-title {
+  font-size: clamp(1.15rem, 2.6vw, 1.5rem); margin-bottom: .5rem;
+  transition: color .3s var(--ease);
+}
+.card:hover .card-title { color: var(--accent); }
+.blurb { color: var(--text-2); font-size: .95rem; margin-bottom: .9rem; max-width: 62ch; }
+
+.pts { display: grid; gap: .35rem; margin-bottom: 1rem; }
+.featured .pts { grid-template-columns: 1fr 1fr; gap: .35rem 1.4rem; }
+.pts li {
+  position: relative; padding-left: 1.15rem; color: var(--text-2);
+  font-size: .88rem; max-width: 60ch;
+}
+.pts li::before {
+  content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: .7rem; top: .18rem;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+.tag {
+  font-family: var(--font-mono); font-size: .71rem; color: var(--text-2);
+  background: var(--bg-inset); border: 1px solid var(--border);
+  border-radius: 6px; padding: .16rem .5rem;
+}
+/* linked tags read as links at rest — `.tag`'s border shorthand would
+   otherwise win over the global `.is-link` tint */
+.tag.is-link { border-color: color-mix(in oklab, var(--accent) 32%, var(--border)); }
+.tag.is-link:hover {
+  color: var(--accent);
+  border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+}
+
+@media (max-width: 760px) {
+  .grid { grid-template-columns: 1fr; }
+  .featured .pts { grid-template-columns: 1fr; }
+}

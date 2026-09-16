@@ -1,0 +1,50 @@
+/* Host is layout-transparent so `.rail` remains the direct grid item of `.shell`. */
+:host { display: contents; }
+
+.rail {
+  position: sticky; top: var(--tb-h); align-self: start;
+  height: calc(100vh - var(--tb-h) - var(--statusbar-h));
+  overflow-y: auto; border-right: 1px solid var(--border);
+  background: var(--bg-2); padding: 1rem .6rem 1rem 1rem;
+  display: flex; flex-direction: column;
+}
+.rail-title { font-size: .68rem; letter-spacing: .16em; color: var(--text-3); padding: .2rem .5rem .6rem; }
+.rail-root { font-size: .76rem; color: var(--text-2); padding: .2rem .5rem .5rem; }
+.rail-root .caret { color: var(--text-3); margin-right: .2rem; }
+
+.rail nav ul { display: flex; flex-direction: column; gap: 1px; }
+.rail-item {
+  display: flex; align-items: center; gap: .6rem; padding: .5rem .6rem;
+  border-radius: 7px; color: var(--text-2); position: relative;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.rail-item .ri-icon { color: var(--text-3); flex: none; transition: color .2s var(--ease); }
+.rail-item .ri-file { font-size: .82rem; }
+.rail-item:hover { background: var(--bg-inset); color: var(--text); }
+.rail-item.active {
+  background: color-mix(in oklab, var(--accent) 12%, transparent); color: var(--text);
+}
+.rail-item.active::before {
+  content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 62%; border-radius: 3px; background: var(--accent);
+}
+.rail-item.active .ri-icon { color: var(--accent); }
+
+.rail-foot { margin-top: auto; padding: 1rem .5rem 0; display: flex; flex-direction: column; gap: .5rem; }
+.rf-link { font-size: .78rem; color: var(--text-3); transition: color .2s var(--ease); }
+.rf-link:hover { color: var(--accent); }
+
+.scrim {
+  position: fixed; inset: var(--tb-h) 0 0 0; z-index: 40;
+  background: color-mix(in oklab, #000 55%, transparent); backdrop-filter: blur(2px);
+}
+
+@media (max-width: 980px) {
+  .rail {
+    position: fixed; top: var(--tb-h); left: 0; z-index: 50;
+    width: min(78vw, 300px); height: calc(100vh - var(--tb-h));
+    transform: translateX(-102%); transition: transform .34s var(--ease-out);
+    box-shadow: var(--shadow-2);
+  }
+  .rail.open { transform: none; }
+}

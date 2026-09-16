@@ -1,0 +1,66 @@
+.log { position: relative; }
+.commit { display: grid; grid-template-columns: 30px 1fr; gap: .4rem; }
+
+.graph { position: relative; display: flex; justify-content: center; }
+.graph::before {
+  content: ''; position: absolute; top: 0; bottom: -1.6rem; left: 50%;
+  width: 2px; transform: translateX(-50%);
+  background: var(--border);
+}
+.commit:last-child .graph::before { display: none; }
+.node {
+  width: 14px; height: 14px; border-radius: 50%; margin-top: 5px;
+  background: var(--bg); border: 2px solid var(--accent); z-index: 1;
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 14%, transparent);
+  transition: transform .3s var(--ease-out);
+}
+.node.dim { border-color: var(--text-3); box-shadow: none; }
+.commit:hover .node { transform: scale(1.25); }
+
+.commit-body { padding-bottom: 1.9rem; }
+.commit-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: .55rem; }
+.hash {
+  font-family: var(--font-mono); font-size: .8rem; color: var(--amber);
+  background: color-mix(in oklab, var(--amber) 12%, transparent);
+  padding: .05rem .4rem; border-radius: 5px;
+}
+.subject {
+  font-family: var(--font-mono); font-size: clamp(.86rem, 1.7vw, 1rem);
+  color: var(--text); font-weight: 500; letter-spacing: -.01em;
+}
+.subject.dim { color: var(--text-3); }
+
+.meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .45rem;
+  margin: .55rem 0 .8rem; color: var(--text-2); font-size: .88rem;
+}
+.company { font-weight: 600; color: var(--text); }
+/* the linked variant has to beat `.company`'s colour, hence the pair selector */
+.company.a-link { color: var(--accent); }
+.when { color: var(--teal); font-size: .82rem; }
+.sep { color: var(--text-3); }
+.loc { color: var(--text-3); }
+
+.points { display: grid; gap: .4rem; margin-bottom: .9rem; }
+.points li {
+  position: relative; padding-left: 1.2rem; color: var(--text-2);
+  font-size: .95rem; max-width: 74ch;
+}
+.points li::before {
+  content: '+'; position: absolute; left: 0; top: -1px;
+  color: var(--green); font-family: var(--font-mono); font-weight: 600;
+}
+
+.stack { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip {
+  font-family: var(--font-mono); font-size: .72rem; color: var(--text-2);
+  border: 1px solid var(--border); border-radius: 6px; padding: .18rem .5rem;
+  background: var(--bg-2); transition: border-color .25s var(--ease), color .25s var(--ease);
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+/* linked chips read as links at rest — `.chip`'s border shorthand would
+   otherwise win over the global `.is-link` tint */
+.chip.is-link { border-color: color-mix(in oklab, var(--accent) 32%, var(--border)); }
+.chip.is-link:hover { background: color-mix(in oklab, var(--accent) 10%, transparent); }
+
+.init .commit-body { padding-bottom: 0; }

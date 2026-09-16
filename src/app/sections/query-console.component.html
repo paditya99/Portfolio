@@ -1,0 +1,58 @@
+<section id="query" class="wrap">
+  <app-section-header id="query" appReveal />
+
+  <div class="sql" appReveal [revealDelay]="80">
+    <div class="sql-top">
+      <div class="tabs" role="tablist" aria-label="Saved queries">
+        @for (query of queries; track query.id; let i = $index) {
+          <button class="qtab mono" role="tab" [class.on]="active() === i"
+                  [attr.aria-selected]="active() === i" (click)="select(i)">
+            {{ query.label }}
+          </button>
+        }
+      </div>
+      <button class="run mono" (click)="run()" [disabled]="running()">
+        <span class="tri" aria-hidden="true">▶</span> Run
+      </button>
+    </div>
+
+    <!-- editor -->
+    <div class="editor mono">
+      @for (line of visibleSql(); track $index; let li = $index) {
+        <div class="cline">
+          <span class="ln">{{ li + 1 }}</span>
+          <span class="src">@for (t of line; track $index) {<span [class]="t.c">{{ t.t }}</span>}@if (isTyping() && li === caretLine()) {<span class="type-caret"></span>}</span>
+        </div>
+      }
+    </div>
+
+    <!-- result -->
+    <div class="result">
+      @if (running()) {
+        <div class="running mono"><span class="spin" aria-hidden="true"></span> executing on career.db…</div>
+      } @else {
+        <div class="grid">
+          <table>
+            <thead>
+              <tr>@for (c of q().columns; track c; let ci = $index) {
+                <th [class.r]="q().align[ci] === 'r'">{{ c }}</th>}</tr>
+            </thead>
+            <tbody>
+              @for (row of q().rows; track $index; let ri = $index) {
+                <tr class="rrow" [style.animation-delay.ms]="ri * 55">
+                  @for (cell of row; track $index; let ci = $index) {
+                    <td [class.r]="q().align[ci] === 'r'"
+                        [class.first]="ci === 0">{{ cell }}</td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <p class="rfoot mono">
+          <span class="tok-com">-- {{ q().rows.length }} row{{ q().rows.length === 1 ? '' : 's' }} in set · {{ ms() }} ms</span>
+        </p>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,89 @@
+<section id="skills" class="wrap">
+  <app-section-header id="skills" appReveal />
+
+  <div class="cmd" appReveal [revealDelay]="80">
+    <!-- palette invocation hint -->
+    <div class="cmd-caption mono">
+      <span class="tok-com">// press to search symbols</span>
+      <span class="kbd">Ctrl</span><span class="kbd">Shift</span><span class="kbd">P</span>
+    </div>
+
+    <div class="cmd-panel">
+      <!-- search bar -->
+      <div class="cmd-bar">
+        <svg class="cmd-search" viewBox="0 0 24 24" width="16" height="16" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input #box class="cmd-input mono" type="text"
+               [ngModel]="query()" (ngModelChange)="onQuery($event)"
+               (keydown)="onKey($event)"
+               placeholder="Filter {{ rows.length }} skills — try 'aws', 'security', 'angular'…"
+               aria-label="Filter skills" autocomplete="off" spellcheck="false" />
+        <span class="cmd-count mono">{{ filtered().length }}</span>
+      </div>
+
+      <!-- category quick-filters -->
+      <div class="cmd-cats" role="tablist" aria-label="Filter by category">
+        <button class="cat-btn" role="tab" [class.on]="activeCat() === null"
+                [attr.aria-selected]="activeCat() === null" (click)="setCat(null)">
+          All <span class="cat-n mono">{{ rows.length }}</span>
+        </button>
+        @for (c of cats; track c.group) {
+          <button class="cat-btn" role="tab" [attr.data-kind]="c.kind"
+                  [class.on]="activeCat() === c.group"
+                  [attr.aria-selected]="activeCat() === c.group" (click)="setCat(c.group)">
+            {{ c.short }} <span class="cat-n mono">{{ c.count }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- results -->
+      <ul class="cmd-list" role="listbox" aria-label="Skills">
+        @for (r of filtered(); track r.name; let i = $index) {
+          <li role="option" [attr.aria-selected]="i === index()">
+            <div class="cmd-row" [class.sel]="i === index()" [attr.data-idx]="i"
+                 (mouseenter)="index.set(i)">
+              <span class="cmd-ico" [attr.data-kind]="r.kind">{{ r.glyph }}</span>
+              <div class="cmd-main">
+                <p class="cmd-name">
+                  @if (r.url) {
+                    <a class="mono sym-link" [href]="r.url" target="_blank" rel="noopener"
+                       [attr.aria-label]="r.name + ' — official documentation, opens in a new tab'">
+                      @for (p of parts(r.name); track $index) {
+                        <span [class.hit]="p.hit">{{ p.t }}</span>
+                      }
+                      <svg class="ext" viewBox="0 0 24 24" width="11" height="11" fill="none"
+                           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                           stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 17 17 7M9 7h8v8"/>
+                      </svg>
+                    </a>
+                  } @else {
+                    <span class="mono">
+                      @for (p of parts(r.name); track $index) {
+                        <span [class.hit]="p.hit">{{ p.t }}</span>
+                      }
+                    </span>
+                  }
+                  <span class="cmd-cat" [attr.data-kind]="r.kind">{{ r.group }}</span>
+                </p>
+                <p class="cmd-note">{{ r.note }}</p>
+              </div>
+              <span class="cmd-meta mono">{{ r.meta }}</span>
+            </div>
+          </li>
+        } @empty {
+          <li class="cmd-none mono">
+            <span class="tok-com">// no symbols match “{{ query() }}”</span>
+          </li>
+        }
+      </ul>
+
+      <div class="cmd-foot mono">
+        <span><span class="kbd sm">↑</span><span class="kbd sm">↓</span> navigate</span>
+        <span>{{ filtered().length }} / {{ rows.length }} symbols</span>
+      </div>
+    </div>
+  </div>
+</section>

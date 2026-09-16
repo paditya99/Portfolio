@@ -1,0 +1,11 @@
+<header class="s-head" [class.emph]="h().emphasis">
+  @if (h().live) {
+    <span class="live mono"><span class="pulse"></span>{{ h().eyebrow }}</span>
+  } @else if (h().eyebrow) {
+    <span class="eyebrow mono">{{ h().eyebrow }}</span>
+  } @else {
+    <span class="s-index mono">{{ h().index }}</span>
+  }
+  <h2 class="s-title">{{ h().title }}</h2>
+  <span class="s-file mono">{{ h().file }}</span>
+</header>

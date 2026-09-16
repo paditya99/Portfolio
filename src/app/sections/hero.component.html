@@ -1,0 +1,86 @@
+<section id="home" class="hero">
+  <div class="hero-grid">
+    <!-- identity -->
+    <div class="identity">
+      <p class="eyebrow load load-1">~/aditya-pathak · <span class="branch">main</span></p>
+
+      <pre class="id-code load load-2" aria-hidden="true"><span class="tok-com">// {{ profile.availabilityComment }}</span>
+<span class="tok-key">export class</span> <span class="tok-type">Aditya</span> <span class="tok-key">implements</span> <span class="tok-type">SoftwareEngineer</span></pre>
+
+      <h1 class="name load load-3">{{ profile.name }}</h1>
+
+      <div class="role load load-4">
+        <span class="chev">&gt;</span>
+        <app-typewriter [phrases]="profile.typewriter"></app-typewriter>
+      </div>
+
+      <!-- Print only. The typewriter would commit whatever phrase it happened to
+           stop on — possibly mid-word — and a printed résumé wants the contact
+           details at the top rather than eight sections down. -->
+      <div class="print-only print-head">
+        <p class="ph-role">{{ profile.role }}</p>
+        <!-- real anchors, not interpolated text: printing to PDF keeps <a> as a
+             clickable annotation, and a bare string is dead on the page -->
+        <p class="ph-meta">
+          <a [href]="'mailto:' + links.email">{{ links.email }}</a>
+          <span class="ph-dot">·</span>{{ links.location }}
+        </p>
+        <p class="ph-meta">
+          <a [href]="links.linkedin">{{ links.linkedin }}</a>
+          <span class="ph-dot">·</span>
+          <a [href]="links.github">{{ links.github }}</a>
+        </p>
+      </div>
+
+      <p class="tagline load load-5">
+        I build the backend of a mortgage lending and brokerage platform —
+        <span class="accent">Node.js&nbsp;/&nbsp;NestJS</span> microservices and REST APIs.
+        I ship features, integrate flows, fix what breaks, make slow things fast — and
+        work on the <span class="accent">RAG</span> and
+        <span class="accent">AWS&nbsp;Bedrock</span> side of it too.
+      </p>
+
+      <div class="cta load load-6">
+        <a class="btn btn-primary" href="#projects">
+          <span class="mono">&lt;/&gt;</span> View work
+        </a>
+        <a class="btn btn-ghost" [href]="links.resume" download>
+          Download resume
+        </a>
+        <a class="btn btn-ghost" [href]="'mailto:' + links.email">
+          Email me
+        </a>
+      </div>
+    </div>
+
+    <!-- portrait, treated as an editor preview -->
+    <figure class="portrait-frame load load-5">
+      <div class="pf-bar">
+        <app-window-dots />
+        <span class="pf-name mono">aditya.jpg — preview</span>
+      </div>
+      <div class="portrait">
+        <img src="media/aditya-portrait.jpg"
+             alt="Portrait of Aditya Pathak" loading="eager" />
+        <span class="scan"></span>
+      </div>
+      <figcaption class="pf-tags">
+        <span>{{ profile.locationShort }}</span><span>· {{ profile.timezone }}</span><span>· <a class="pf-cta" href="#contact">{{ profile.ctaCaption }} <span class="ar" aria-hidden="true">→</span></a></span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- signature: the two AI systems shipped for the mortgage platform -->
+  <div class="signature" appReveal>
+    <div class="sig-head">
+      <p class="eyebrow">signature work · how the platform fits together</p>
+      <p class="sig-sub">Three flows through the lending platform — the everyday request path, and the two Bedrock-backed systems that sit alongside it</p>
+    </div>
+    <app-arch-diagram></app-arch-diagram>
+  </div>
+
+  <a class="scroll-hint" href="#about" aria-label="Scroll to about">
+    <span class="mono">scroll</span>
+    <span class="arrow"></span>
+  </a>
+</section>

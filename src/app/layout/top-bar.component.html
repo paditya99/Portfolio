@@ -1,0 +1,46 @@
+<header class="topbar" [class.is-scrolled]="scrolled()">
+  <div class="tb-left">
+    <span class="logo" aria-hidden="true"><span class="l-chev">&lt;/&gt;</span></span>
+    <nav class="crumbs mono" aria-label="Breadcrumb">
+      <span class="crumb dim hide-sm">aditya-pathak</span>
+      <span class="slash hide-sm">/</span>
+      <span class="crumb">{{ activeFile() }}</span>
+    </nav>
+  </div>
+
+  <div class="tb-right">
+    <button type="button" class="tb-console mono" (click)="askConsole()"
+            title="Jump to the terminal and ask it something">
+      <span class="tc-caret" aria-hidden="true">&gt;_</span>
+      <span class="tc-label">Ask the console</span>
+    </button>
+    <a class="tb-link mono" [href]="links.resume" download>Resume.pdf</a>
+    <a class="tb-link mono hide-sm" [href]="'mailto:' + links.email">email</a>
+
+    <button class="theme-btn" (click)="toggleTheme()"
+      [attr.aria-label]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+      [attr.aria-pressed]="theme() === 'light'">
+      <span class="tb-track">
+        <span class="tb-thumb" [class.light]="theme() === 'light'">
+          @if (theme() === 'dark') {
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/>
+            </svg>
+          } @else {
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.2 17.2 18.6 18.6M18.6 5 17.2 6.4M6.4 17.2 5 18.6"/>
+            </svg>
+          }
+        </span>
+      </span>
+    </button>
+
+    <button class="burger" (click)="toggleMenu()" [class.open]="menuOpen()" aria-label="Toggle navigation" [attr.aria-expanded]="menuOpen()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- reading progress; decorative, the scroll bar already conveys this -->
+  <span class="tb-progress" aria-hidden="true" [style.transform]="'scaleX(' + progress() / 100 + ')'"></span>
+</header>

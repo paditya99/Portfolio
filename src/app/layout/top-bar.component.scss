@@ -1,0 +1,87 @@
+.topbar {
+  position: fixed; inset: 0 0 auto 0; height: var(--tb-h); z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(.8rem, 2.5vw, 1.4rem);
+  background: var(--bg-glass); backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s var(--ease), background .3s var(--ease);
+}
+.topbar.is-scrolled { border-bottom-color: var(--border); }
+
+/* reading progress — sits on the bottom edge, scaled from the left */
+.tb-progress {
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+  transform-origin: 0 50%; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  will-change: transform;
+}
+
+.tb-left { display: flex; align-items: center; gap: .8rem; }
+.logo {
+  display: grid; place-items: center; width: 30px; height: 30px;
+  border-radius: 8px; background: var(--accent);
+}
+.l-chev { font-family: var(--font-mono); font-weight: 700; font-size: .72rem; color: var(--accent-contrast); }
+
+.crumbs { display: flex; align-items: center; gap: .45rem; font-size: .82rem; }
+.crumb { color: var(--text); }
+.crumb.dim { color: var(--text-3); }
+.slash { color: var(--text-3); }
+
+.tb-right { display: flex; align-items: center; gap: .7rem; }
+.tb-link {
+  font-size: .8rem; color: var(--text-2); padding: .3rem .55rem; border-radius: 7px;
+  transition: color .25s var(--ease), background .25s var(--ease);
+}
+.tb-link:hover { color: var(--accent); background: color-mix(in oklab, var(--accent) 10%, transparent); }
+
+/* the one call to action in the bar — outlined so it reads as a control
+   rather than another link, without shouting over the résumé download */
+.tb-console {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .78rem; color: var(--text-2);
+  padding: .3rem .6rem; border-radius: 7px;
+  border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border));
+  background: color-mix(in oklab, var(--accent) 6%, transparent);
+  transition: color .25s var(--ease), background .25s var(--ease),
+              border-color .25s var(--ease), transform .25s var(--ease-out);
+}
+.tb-console:hover {
+  color: var(--accent); border-color: var(--accent); transform: translateY(-1px);
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+}
+.tb-console .tc-caret { color: var(--accent); font-weight: 700; letter-spacing: -.05em; }
+
+@media (max-width: 720px) {
+  /* keep the caret as the affordance once the label no longer fits */
+  .tb-console .tc-label { display: none; }
+  .tb-console { padding: .3rem .45rem; }
+}
+
+/* theme toggle */
+.theme-btn { padding: 2px; border-radius: 20px; }
+.tb-track {
+  display: flex; align-items: center; width: 46px; height: 24px; padding: 2px;
+  border-radius: 20px; background: var(--bg-inset); border: 1px solid var(--border);
+  transition: background .3s var(--ease);
+}
+.tb-thumb {
+  display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-contrast);
+  transform: translateX(0); transition: transform .35s var(--ease-out);
+}
+.tb-thumb.light { transform: translateX(22px); }
+
+/* burger (mobile) */
+.burger { display: none; flex-direction: column; gap: 4px; width: 26px; padding: 4px; }
+.burger span { height: 2px; width: 100%; background: var(--text); border-radius: 2px; transition: transform .3s var(--ease), opacity .3s var(--ease); }
+.burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 980px) {
+  .burger { display: flex; }
+}
+@media (max-width: 560px) {
+  .crumbs { font-size: .74rem; }
+}

@@ -1,0 +1,50 @@
+<!-- ================= Intro boot gate ================= -->
+@if (!booted()) {
+  <div class="intro" [class.closing]="revealing()" (click)="enter()"
+       role="button" tabindex="0" aria-label="Press Enter or click to enter the workspace">
+    <div class="intro-term" (click)="$event.stopPropagation(); enter()">
+      <div class="term-chrome" aria-hidden="true">
+        <span class="term-dot d1"></span><span class="term-dot d2"></span><span class="term-dot d3"></span>
+        <span class="term-title mono">aditya-pathak — zsh</span>
+      </div>
+      <div class="term-body mono">
+        <span class="term-cmd">
+          <span class="usr">aditya</span><span class="path">&#64;workspace</span>
+          <span class="path">:~$</span> ./init<span class="caret" [class.steady]="booting()"></span>
+        </span>
+
+        @for (line of BOOT_LOG; track $index) {
+          @if ($index < bootLine()) {
+            <span class="term-line">
+              <span class="arrow">&#8227;</span> {{ line.text }}
+              <span class="dots" aria-hidden="true"></span>
+              <span class="ok">{{ line.tag }}</span>
+            </span>
+          }
+        }
+        @if (booting() && bootLine() >= BOOT_LOG.length) {
+          <span class="term-line ready"><span class="arrow">&#10095;</span> ready — welcome</span>
+        }
+
+        @if (booting()) {
+          <div class="boot-bar" aria-hidden="true">
+            <i class="boot-bar-fill" [style.animationDuration.ms]="barMs"></i>
+          </div>
+        } @else {
+          <p class="intro-hint">
+            press <kbd>&#9166; enter</kbd> <span class="or">or</span> <kbd>click</kbd> to enter
+          </p>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- reveal: a square iris uncovers the page while the amber ring rides its edge -->
+@if (revealing() && !ringDone()) {
+  <div class="reveal-iris" aria-hidden="true"></div>
+  <div class="reveal-ripple" aria-hidden="true">
+    <span class="rr-core"></span>
+    <span class="rr-ring"></span>
+  </div>
+}

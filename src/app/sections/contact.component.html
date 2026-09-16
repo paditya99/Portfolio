@@ -1,0 +1,103 @@
+<section id="contact" class="contact">
+  <div class="band" aria-hidden="true">
+    <img src="media/aditya-band.jpg" alt="" loading="lazy" />
+  </div>
+
+  <div class="panel" appReveal>
+    <app-section-header id="contact" />
+
+    <div class="term">
+      <div class="term-bar">
+        <app-window-dots />
+        <span class="term-title mono">bash — aditya&#64;portfolio</span>
+      </div>
+      <div class="term-body mono">
+        <p class="tl"><span class="prompt">aditya&#64;portfolio</span>:<span class="path">~</span>$ ./contact.sh --say-hello</p>
+        <p class="tl out"><span class="ok">✔</span> {{ profile.availability }}</p>
+        <p class="tl out"><span class="ok">✔</span> {{ profile.workMode }}</p>
+        <p class="tl out"><span class="ok">✔</span> {{ profile.collaboration }}</p>
+        <p class="tl out"><span class="ok">✔</span> {{ links.location }} · {{ profile.timezone }}</p>
+        <p class="tl"><span class="prompt">aditya&#64;portfolio</span>:<span class="path">~</span>$ ls ./channels</p>
+
+        <div class="links">
+          <a class="lk" [href]="'mailto:' + links.email">
+            <span class="lk-k mono">email</span>
+            <span class="lk-v">{{ links.email }}</span>
+            <span class="arw" aria-hidden="true">→</span>
+          </a>
+          <a class="lk" [href]="links.linkedin" target="_blank" rel="noopener">
+            <span class="lk-k mono">linkedin</span>
+            <span class="lk-v">/in/adityapathak-nitrr</span>
+            <span class="arw" aria-hidden="true">→</span>
+          </a>
+          <a class="lk" [href]="links.github" target="_blank" rel="noopener">
+            <span class="lk-k mono">github</span>
+            <span class="lk-v">/paditya99</span>
+            <span class="arw" aria-hidden="true">→</span>
+          </a>
+          <a class="lk primary" [href]="links.resume" download>
+            <span class="lk-k mono">resume</span>
+            <span class="lk-v">Aditya_Pathak_Resume.pdf ↓</span>
+            <span class="arw" aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <!-- everything above is a worked example; from here the terminal is live -->
+        <div class="term-log" #log role="log" aria-live="polite" aria-label="Terminal output">
+          @for (l of lines(); track $index) {
+            @switch (l.kind) {
+              @case ('cmd') {
+                <p class="tl tl-cmd"><span class="prompt">aditya&#64;portfolio</span>:<span class="path">~</span>$ {{ l.text }}</p>
+              }
+              @case ('text') { <p class="tl out tl-text">{{ l.text }}</p> }
+              @case ('ok')  { <p class="tl out"><span class="ok">✔</span> {{ l.text }}</p> }
+              @case ('err') { <p class="tl tl-err">{{ l.text }}</p> }
+              @case ('dim') { <p class="tl tl-dim">{{ l.text }}</p> }
+              @default      { <p class="tl out">{{ l.text }}</p> }
+            }
+          }
+        </div>
+
+        <!-- live prompt -->
+        <form class="tl term-input" (ngSubmit)="submit()">
+          <label class="prompt" for="term-box">aditya&#64;portfolio</label><span>:</span><span class="path">~</span><span>$</span>
+          <span class="term-field">
+            <!-- ghost suffix sits under the transparent input; the typed part is
+                 hidden but still occupies width, so the two stay aligned -->
+            @if (ghost()) {
+              <span class="term-ghost mono" aria-hidden="true"
+                ><span class="g-typed">{{ draft() }}</span><span class="g-rest">{{ ghost() }}</span></span>
+            }
+            <input #box id="term-box" class="term-box mono" type="text"
+                   [ngModel]="draft()" (ngModelChange)="draft.set($event)"
+                   name="command" (keydown)="onKey($event)"
+                   [placeholder]="placeholder"
+                   aria-label="Type a command, then press Enter"
+                   [attr.aria-autocomplete]="'list'"
+                   autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
+          </span>
+          @if (ghost()) { <span class="ghost-key mono" aria-hidden="true">Tab ↹</span> }
+        </form>
+
+        <!-- ambiguous prefix: offer the candidates instead of guessing -->
+        @if (suggestions().length) {
+          <div class="term-sugg" role="listbox" aria-label="Command suggestions">
+            @for (s of suggestions(); track s) {
+              <button type="button" role="option" [attr.aria-selected]="false"
+                      class="sugg mono" (click)="runChip(s)">{{ s }}</button>
+            }
+          </div>
+        }
+
+        <!-- chips are the primary interface on touch, where nobody types -->
+        <div class="term-chips">
+          <span class="chip-hint mono">{{ commandCount }} commands —</span>
+          @for (c of chips; track c.name) {
+            <button type="button" class="term-chip mono" [class.primary]="c.primary"
+                    [title]="c.hint" (click)="runChip(c.name)">{{ c.label }}</button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

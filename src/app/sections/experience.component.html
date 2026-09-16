@@ -1,0 +1,58 @@
+<section id="experience" class="wrap">
+  <app-section-header id="experience" appReveal />
+
+  <div class="log">
+    @for (r of roles; track r.company; let i = $index) {
+      <article class="commit" appReveal [revealDelay]="i * 90">
+        <div class="graph"><span class="node"></span></div>
+
+        <div class="commit-body">
+          <div class="commit-top">
+            <code class="hash">{{ hash(i) }}</code>
+            <span class="subject">{{ r.scope }}</span>
+          </div>
+
+          <div class="meta">
+            @if (r.url) {
+              <a class="company a-link" [href]="r.url" target="_blank" rel="noopener"
+                 [attr.aria-label]="r.company + ' — company website, opens in a new tab'">{{ r.company }}</a>
+            } @else {
+              <span class="company">{{ r.company }}</span>
+            }
+            <span class="sep">·</span>
+            <span>{{ r.title }}</span>
+            <span class="sep">·</span>
+            <span class="mono when">{{ r.period }}</span>
+            <span class="sep">·</span>
+            <span class="loc">{{ r.location }}</span>
+          </div>
+
+          <ul class="points">
+            @for (p of r.points; track p) { <li>{{ p }}</li> }
+          </ul>
+
+          <div class="stack">
+            @for (t of r.stack; track t) {
+              @if (link(t); as href) {
+                <a class="chip is-link" [href]="href" target="_blank" rel="noopener"
+                   [attr.aria-label]="t + ' — official documentation, opens in a new tab'">{{ t }}</a>
+              } @else {
+                <span class="chip">{{ t }}</span>
+              }
+            }
+          </div>
+        </div>
+      </article>
+    }
+
+    <div class="commit init" appReveal>
+      <div class="graph"><span class="node dim"></span></div>
+      <div class="commit-body">
+        <div class="commit-top">
+          <code class="hash">0000000</code>
+          <span class="subject dim">init: B.Sc (Hons.) Computer Science, SSCBS · University of Delhi — the first commit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

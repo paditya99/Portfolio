@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  --tb-h: 46px;
+}
+
+/* ================= Shell ================= */
+.shell {
+  display: grid; grid-template-columns: var(--rail-w) 1fr;
+  padding-top: var(--tb-h); min-height: 100vh;
+}
+
+/* ================= Main ================= */
+.main { min-width: 0; padding-bottom: calc(var(--statusbar-h) + 2.5rem); }
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(1.2rem, 4vw, 2.4rem); }
+
+/* ================= Responsive ================= */
+@media (max-width: 980px) {
+  .shell { grid-template-columns: 1fr; }
+}

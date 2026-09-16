@@ -1,0 +1,6 @@
+.foot {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem;
+  padding: 2.5rem 0 1rem; margin-top: 2rem;
+  border-top: 1px solid var(--border); font-size: .78rem; color: var(--text-2);
+}
+.foot .dim { color: var(--text-3); }

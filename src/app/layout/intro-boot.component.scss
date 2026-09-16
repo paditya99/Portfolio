@@ -1,0 +1,173 @@
+/* Host is layout-neutral — every element below is fixed-position and overlays
+   the workspace. Shared vars so the square iris and the ripple wavefront move as one. */
+:host {
+  display: contents;
+  --reveal-ease-dur: 1.7s;
+  --reveal-ease: cubic-bezier(.25, .6, .35, 1);
+  --reveal-size: 150vmax; /* final square side — covers any viewport */
+}
+
+/* The workspace is unveiled by a square "iris": a viewport-centred box whose
+   huge box-shadow fills everything OUTSIDE it with the backdrop colour. As the
+   box grows from the centre it uncovers the page in a perfect square (matching
+   the click ripple's shape), and the amber square ring rides its edge. The
+   workspace itself is never clipped, so the fixed chrome stays pinned. */
+.reveal-iris {
+  position: fixed; left: 50%; top: 50%; z-index: 9985;
+  width: 0; height: 0; border-radius: 3px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 100vmax var(--bg-inset);
+  pointer-events: none;
+  animation: iris-open var(--reveal-ease-dur) var(--reveal-ease) forwards;
+}
+@keyframes iris-open {
+  from { width: 0; height: 0; }
+  to   { width: var(--reveal-size); height: var(--reveal-size); }
+}
+
+.intro {
+  position: fixed; inset: 0; z-index: 10000;
+  display: grid; place-items: center; padding: 1.2rem;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  background:
+    radial-gradient(130% 100% at 50% -10%, color-mix(in oklab, var(--amber) 7%, transparent), transparent 55%),
+    var(--bg-inset);
+  animation: intro-in .45s var(--ease-out) both;
+}
+.intro:focus-visible { outline: none; }
+.intro.closing { animation: intro-out .55s var(--ease) forwards; cursor: default; pointer-events: none; }
+
+@keyframes intro-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes intro-out { to { opacity: 0; transform: scale(1.02); } }
+
+/* terminal card */
+.intro-term {
+  width: min(92vw, 540px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--bg-2) 94%, transparent);
+  box-shadow: var(--shadow-2), var(--shadow-glow);
+  overflow: hidden;
+  animation: term-rise .5s var(--ease-out) .06s both;
+}
+.intro.closing .intro-term { animation: term-drop .55s var(--ease) forwards; }
+@keyframes term-rise { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes term-drop { to { opacity: 0; transform: scale(.94); } }
+
+.term-chrome {
+  display: flex; align-items: center; gap: 7px;
+  padding: .6rem .85rem;
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--border-soft);
+}
+.term-dot { width: 11px; height: 11px; border-radius: 50%; opacity: .9; }
+.term-dot.d1 { background: var(--coral); }
+.term-dot.d2 { background: var(--amber); }
+.term-dot.d3 { background: var(--green); }
+.term-title { margin-left: .4rem; font-size: .72rem; color: var(--text-3); }
+
+.term-body {
+  padding: 1.1rem 1.15rem 1.2rem;
+  font-size: .84rem; line-height: 1.95;
+  color: var(--text-2);
+}
+
+.term-cmd { display: block; color: var(--text); white-space: nowrap; }
+.term-cmd .usr  { color: var(--teal); }
+.term-cmd .path { color: var(--text-3); }
+
+.caret {
+  display: inline-block; width: .58ch; height: 1.02em;
+  transform: translateY(.16em); margin-left: 1px;
+  background: var(--amber);
+  animation: caret-blink 1.05s steps(1) infinite;
+}
+.caret.steady { animation: none; opacity: .55; }
+@keyframes caret-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+.term-line {
+  display: flex; align-items: baseline; gap: .5ch;
+  color: var(--text-2);
+  animation: line-in .38s var(--ease-out) both;
+}
+.term-line .arrow { color: var(--text-3); }
+.term-line .dots { flex: 1; border-bottom: 1px dotted var(--border); transform: translateY(-.28em); }
+.term-line .ok {
+  color: var(--green); font-weight: 600;
+  text-transform: uppercase; font-size: .72rem; letter-spacing: .08em;
+}
+.term-line.ready { color: var(--amber); margin-top: .1rem; }
+.term-line.ready .arrow { color: var(--amber); }
+@keyframes line-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+/* idle hint */
+.intro-hint {
+  margin-top: 1.15rem;
+  font-size: .78rem; color: var(--text-3); letter-spacing: .015em;
+  animation: hint-pulse 2.3s var(--ease) infinite;
+}
+.intro-hint .or { color: var(--text-3); opacity: .7; margin: 0 .15rem; }
+.intro-hint kbd {
+  color: var(--amber); font-family: var(--font-mono); font-size: .74rem;
+  padding: .12rem .45rem; border-radius: 6px;
+  background: var(--bg-inset); border: 1px solid var(--border);
+  box-shadow: 0 1px 0 var(--border);
+}
+@keyframes hint-pulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+
+/* loader bar (fills over the clip, duration bound inline) */
+.boot-bar {
+  margin-top: 1.1rem; height: 3px; border-radius: 3px;
+  background: var(--bg-inset); overflow: hidden;
+}
+.boot-bar-fill {
+  display: block; height: 100%; width: 0; border-radius: 3px;
+  background: linear-gradient(90deg, var(--amber), var(--coral));
+  box-shadow: 0 0 10px color-mix(in oklab, var(--amber) 55%, transparent);
+  animation: boot-fill linear forwards;
+}
+@keyframes boot-fill { from { width: 0; } to { width: 100%; } }
+
+/* ---- Reveal ripple: the click "caret drop", scaled up to carry the page in ---- */
+.reveal-ripple {
+  position: fixed; inset: 0; z-index: 9990;
+  display: grid; place-items: center; pointer-events: none;
+  /* Clip the huge scaled ring to the viewport so it can't extend the page's
+     scrollable overflow (which was nudging the scroll position down). */
+  overflow: hidden;
+}
+/* Square wavefront (matching the click ripple) that grows by size — not
+   transform — so its border stays a crisp, constant-width edge sitting exactly
+   on the square iris boundary. */
+.reveal-ripple .rr-ring {
+  width: 0; height: 0; border-radius: 3px;
+  border: 2px solid var(--accent);
+  box-shadow:
+    0 0 30px color-mix(in oklab, var(--amber) 55%, transparent),
+    inset 0 0 26px color-mix(in oklab, var(--amber) 20%, transparent);
+  animation: rr-ring var(--reveal-ease-dur) var(--reveal-ease) forwards;
+}
+.reveal-ripple .rr-core {
+  position: absolute; width: 15px; height: 15px; border-radius: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 22px var(--amber);
+  animation: rr-core .6s var(--ease-out) forwards;
+}
+/* Same size + easing as the iris, so the ring rides its edge exactly. */
+@keyframes rr-ring {
+  0%   { width: 0; height: 0; opacity: 0; }
+  8%   { opacity: .95; }
+  70%  { opacity: .6; }
+  100% { width: var(--reveal-size); height: var(--reveal-size); opacity: 0; }
+}
+@keyframes rr-core {
+  0%   { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0);   opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro, .intro-term, .term-line, .caret, .intro-hint, .boot-bar-fill, .rr-ring, .reveal-iris { animation: none !important; }
+  .boot-bar-fill { width: 100%; }
+  /* No wipe under reduced motion — the iris never covers, page is just shown. */
+  .reveal-iris { box-shadow: none; }
+}

@@ -1,0 +1,209 @@
+/* positioned so the node dialog can sit over the diagram rather than the page */
+.arch-wrap { width: 100%; position: relative; }
+
+/* ── node explanation dialog ──────────────────────────── */
+.node-dialog-scrim {
+  position: absolute; inset: 0; z-index: 5;
+  background: color-mix(in oklab, var(--bg) 62%, transparent);
+  backdrop-filter: blur(2px);
+  animation: nd-fade .18s var(--ease-out) both;
+}
+.node-dialog {
+  position: absolute; z-index: 6;
+  left: 50%; top: 50%;
+  width: min(30rem, calc(100% - 2rem));
+  padding: 1.15rem 1.3rem 1rem;
+  border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border));
+  border-radius: 14px;
+  background: var(--bg-2);
+  box-shadow: var(--shadow-2);
+  animation: nd-pop .26s var(--ease-out) both;
+}
+.nd-close {
+  position: absolute; top: .6rem; right: .6rem;
+  display: grid; place-items: center; width: 26px; height: 26px;
+  border-radius: 7px; color: var(--text-3);
+  border: 1px solid transparent;
+  transition: color .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
+}
+.nd-close:hover {
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+}
+.nd-kind {
+  font-size: .64rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: .3rem;
+}
+.nd-title { font-size: 1.15rem; margin-bottom: .1rem; }
+.nd-sub { font-size: .74rem; color: var(--accent); margin-bottom: .7rem; }
+.nd-body { font-size: .92rem; line-height: 1.6; color: var(--text-2); }
+.nd-foot {
+  margin-top: .85rem; padding-top: .6rem; border-top: 1px solid var(--border-soft);
+  font-size: .66rem; color: var(--text-3);
+}
+
+/* colour the eyebrow by node kind, reusing the legend's vocabulary */
+.nd-kind[data-kind='compute'] { color: var(--amber); }
+.nd-kind[data-kind='data']    { color: var(--green); }
+.nd-kind[data-kind='ai']      { color: var(--lav); }
+.nd-kind[data-kind='api']     { color: var(--blue); }
+.nd-kind[data-kind='auth']    { color: var(--coral); }
+.nd-kind[data-kind='storage'] { color: var(--teal); }
+
+@keyframes nd-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes nd-pop {
+  from { opacity: 0; transform: translate(-50%, -46%) scale(.94); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .node-dialog-scrim, .node-dialog { animation: none; }
+  .node-dialog { transform: translate(-50%, -50%); }
+}
+@media (max-width: 560px) {
+  .node-dialog { padding: 1rem 1.05rem .85rem; }
+  .nd-title { font-size: 1.05rem; }
+}
+
+/* ── flow tabs + legend ───────────────────────────────── */
+.flow-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; flex-wrap: wrap; margin-bottom: .85rem;
+}
+.flow-tabs { display: flex; gap: .4rem; flex-wrap: wrap; }
+.flow-legend {
+  display: flex; gap: 1rem; margin: 0;
+  font-size: .68rem; color: var(--text-3);
+}
+.flow-legend .lg { display: inline-flex; align-items: center; gap: .38rem; }
+.flow-legend .flow-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--amber);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--amber) 70%, transparent);
+}
+.flow-legend .swatch { width: 9px; height: 9px; border-radius: 2px; }
+.flow-legend .sw-compute { background: var(--amber); }
+.flow-legend .sw-data { background: var(--green); }
+.flow-tab {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .42rem .85rem; border-radius: 8px;
+  font-family: var(--font-mono); font-size: .78rem; letter-spacing: .01em;
+  color: var(--text-3); background: var(--bg-3);
+  border: 1px solid var(--border); cursor: pointer;
+  transition: color .25s var(--ease), border-color .25s var(--ease),
+              background .25s var(--ease), transform .2s var(--ease-out);
+}
+.flow-tab:hover { color: var(--text-2); transform: translateY(-1px); }
+.flow-tab .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); transition: background .25s var(--ease); }
+.flow-tab .dot[data-flow='platform'] { background: var(--blue); }
+.flow-tab .dot[data-flow='extraction'] { background: var(--teal); }
+.flow-tab .dot[data-flow='assistant'] { background: var(--coral); }
+.flow-tab.is-active {
+  color: var(--text); background: var(--bg);
+  border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+.arch { width: 100%; margin: 0; }
+svg { width: 100%; height: auto; overflow: visible; }
+
+/* ── edges ────────────────────────────────────────────── */
+.edge-base {
+  stroke: color-mix(in oklab, var(--text-3) 38%, var(--border));
+  stroke-width: 1.5; transition: stroke .35s var(--ease);
+}
+.edge-base.is-active { stroke: color-mix(in oklab, var(--accent) 60%, var(--border)); }
+.edge-flow {
+  stroke: url(#edgeGrad); stroke-width: 2;
+  stroke-dasharray: 7 10; opacity: .5;
+  animation: dash-flow 3.2s linear infinite;
+  transition: opacity .35s var(--ease);
+}
+.edge-flow.is-active { opacity: 1; stroke-width: 2.4; }
+@keyframes dash-flow { to { stroke-dashoffset: -34; } }
+
+/* opacity is driven by the SMIL fade (source → target), so it only carries colour here */
+.packet { fill: var(--text-3); transition: fill .35s var(--ease); }
+.packet.is-active {
+  fill: var(--amber);
+  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--amber) 75%, transparent));
+}
+
+/* ── nodes ────────────────────────────────────────────── */
+.node { transform-box: fill-box; }
+.node { cursor: pointer; }
+.node-box {
+  fill: var(--bg-3); stroke: var(--border); stroke-width: 1.2;
+  transition: stroke .35s var(--ease), fill .35s var(--ease), filter .35s var(--ease);
+}
+.node-tab { fill: var(--text-3); transition: fill .35s var(--ease); }
+.node-label { font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: -.005em; fill: var(--text); }
+.node-sub {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .02em;
+  fill: color-mix(in oklab, var(--text-2) 62%, var(--text-3));
+  transition: fill .35s var(--ease);
+}
+
+.kind-cdn     .node-tab { fill: var(--teal); }
+.kind-api     .node-tab { fill: var(--blue); }
+.kind-auth    .node-tab { fill: var(--coral); }
+.kind-compute .node-tab { fill: var(--amber); }
+.kind-data    .node-tab { fill: var(--green); }
+.kind-ai      .node-tab { fill: var(--lav); }
+.kind-secret  .node-tab { fill: var(--coral); }
+.kind-storage .node-tab { fill: var(--teal); }
+.kind-edge    .node-tab { fill: var(--text-2); }
+
+/* focus state driven by the narration stepper */
+.node { transition: opacity .4s var(--ease); }
+/* unlit nodes stay fully legible — they just sit back one layer */
+.node.is-dim { opacity: .82; }
+/* nodes are buttons now — say so with the cursor and a keyboard ring */
+.node { cursor: pointer; }
+.node:focus-visible { outline: none; }
+.node:focus-visible .node-box { stroke: var(--accent); stroke-width: 2.2; }
+.node.is-open .node-box {
+  fill: color-mix(in oklab, var(--accent) 16%, var(--bg-3));
+  stroke: var(--accent); stroke-width: 2;
+}
+
+.node.is-lit .node-box {
+  fill: color-mix(in oklab, var(--accent) 11%, var(--bg-3));
+  stroke: color-mix(in oklab, var(--accent) 72%, var(--border));
+  stroke-width: 1.6;
+  animation: node-glow 2.1s var(--ease) infinite;
+}
+.node.is-lit .node-label { fill: var(--text); }
+.node.is-lit .node-sub { fill: var(--text); }
+
+/* a soft ambient glow behind the focused node — not a second border */
+@keyframes node-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px color-mix(in oklab, var(--accent) 24%, transparent)); }
+  50%      { filter: drop-shadow(0 0 10px color-mix(in oklab, var(--accent) 52%, transparent)); }
+}
+
+/* ── caption ──────────────────────────────────────────── */
+.flow-caption {
+  display: flex; align-items: flex-start; gap: .6rem;
+  margin-top: 1rem; min-height: 2.6em;
+  padding: .55rem .7rem; border-radius: 9px;
+  background: var(--bg-3); border: 1px solid var(--border);
+}
+.step-index {
+  flex: none; font-size: .72rem; color: var(--accent);
+  padding-top: .1rem; letter-spacing: .04em;
+}
+.step-text {
+  margin: 0; font-size: .88rem; line-height: 1.45; color: var(--text-2);
+  transition: opacity .3s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edge-flow { animation: none; }
+  .node.is-lit .node-box { animation: none; filter: none; }
+  .node.is-dim { opacity: 1; }
+}
+@media (max-width: 560px) {
+  .node-sub { font-size: 11px; }
+  .flow-tab { font-size: .82rem; }
+  .step-text { font-size: .92rem; }
+}

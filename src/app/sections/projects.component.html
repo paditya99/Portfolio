@@ -1,0 +1,35 @@
+<section id="projects" class="wrap">
+  <app-section-header id="projects" appReveal />
+
+  <div class="grid">
+    @for (p of projects; track p.id; let i = $index) {
+      <article class="card" [class.featured]="p.featured" appReveal [revealDelay]="i * 80"
+        (pointermove)="onMove($event)" (pointerleave)="onLeave($event)">
+        <div class="glow" aria-hidden="true"></div>
+        <div class="card-in">
+          <div class="card-head">
+            <span class="kind mono">{{ p.kind }}</span>
+            @if (p.featured) { <span class="badge mono">★ signature build</span> }
+          </div>
+          <h3 class="card-title">{{ p.name }}</h3>
+          <p class="blurb">{{ p.blurb }}</p>
+
+          <ul class="pts">
+            @for (pt of p.points; track pt) { <li>{{ pt }}</li> }
+          </ul>
+
+          <div class="tags">
+            @for (t of p.tags; track t) {
+              @if (link(t); as href) {
+                <a class="tag is-link" [href]="href" target="_blank" rel="noopener"
+                   [attr.aria-label]="t + ' — official documentation, opens in a new tab'">{{ t }}</a>
+              } @else {
+                <span class="tag">{{ t }}</span>
+              }
+            }
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+</section>

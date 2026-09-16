@@ -1,0 +1,83 @@
+.sql {
+  border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  background: var(--bg-2); box-shadow: var(--shadow-1);
+}
+.sql-top {
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+  padding: .6rem .7rem; border-bottom: 1px solid var(--border); background: var(--bg-3);
+}
+.tabs { display: flex; gap: .35rem; flex-wrap: wrap; }
+.qtab {
+  font-size: .76rem; color: var(--text-2); padding: .28rem .7rem;
+  border-radius: 7px; border: 1px solid transparent;
+  transition: color .18s var(--ease), background .18s var(--ease), border-color .18s var(--ease);
+}
+.qtab:hover { color: var(--text); background: var(--bg-inset); }
+.qtab.on {
+  color: var(--accent); background: color-mix(in oklab, var(--accent) 12%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+}
+.run {
+  margin-left: auto; display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .78rem; font-weight: 600; color: var(--accent-contrast);
+  background: var(--accent); padding: .35rem .8rem; border-radius: 7px;
+  transition: transform .2s var(--ease-out), opacity .2s var(--ease);
+}
+.run:hover { transform: translateY(-1px); }
+.run:disabled { opacity: .5; }
+.run .tri { font-size: .62rem; }
+
+/* editor */
+.editor {
+  padding: .9rem 0; font-size: clamp(.78rem, 1.5vw, .9rem); line-height: 1.85;
+  background: var(--bg-inset); border-bottom: 1px solid var(--border); overflow-x: auto;
+}
+.cline { display: flex; white-space: pre; }
+.ln {
+  flex: none; width: 2.6rem; text-align: right; padding-right: 1rem;
+  color: var(--text-3); opacity: .55; user-select: none;
+}
+.src { white-space: pre; }
+/* caret trailing the SQL while a query types itself out */
+.type-caret {
+  display: inline-block; width: .55ch; height: 1.05em; transform: translateY(2px);
+  background: var(--accent); animation: blink 1s steps(1) infinite;
+}
+@media (prefers-reduced-motion: reduce) { .type-caret { animation: none; } }
+.tok-id { color: var(--text); }
+.tok-op { color: var(--text-3); }
+
+/* result */
+.result { padding: .5rem .2rem .3rem; }
+.running {
+  display: flex; align-items: center; gap: .6rem; padding: 1.3rem 1rem;
+  color: var(--text-2); font-size: .85rem;
+}
+.spin {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  animation: spin-slow .7s linear infinite;
+}
+
+.grid { overflow-x: auto; padding: .3rem .3rem 0; }
+table { border-collapse: collapse; width: 100%; font-family: var(--font-mono); font-size: .82rem; }
+thead th {
+  text-align: left; padding: .5rem .9rem; color: var(--teal);
+  font-weight: 600; border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+th.r, td.r { text-align: right; }
+tbody td {
+  padding: .5rem .9rem; color: var(--text-2);
+  border-bottom: 1px solid var(--border-soft); white-space: nowrap;
+}
+td.first { color: var(--text); font-weight: 500; }
+.rrow { opacity: 0; animation: rowin .45s var(--ease-out) forwards; }
+@keyframes rowin { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+tbody tr:hover td { background: color-mix(in oklab, var(--accent) 7%, transparent); }
+
+.rfoot { padding: .7rem .9rem .3rem; font-size: .76rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rrow { opacity: 1; animation: none; }
+  .pulse, .spin { animation: none; }
+}

@@ -1,0 +1,52 @@
+<section id="education" class="wrap">
+  <app-section-header id="education" appReveal />
+
+  <div class="cols">
+    <div class="col" appReveal>
+      <h3 class="col-h mono">// education</h3>
+      @for (e of education; track e.school) {
+        <div class="row">
+          <div class="row-main">
+            <span class="row-title">{{ e.school }}</span>
+            <span class="row-sub">{{ e.detail }}</span>
+          </div>
+          <div class="row-side">
+            <span class="score mono">{{ e.score }}</span>
+            <span class="year mono">{{ e.year }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="col" appReveal [revealDelay]="100">
+      <h3 class="col-h mono">// achievements</h3>
+      @for (a of achievements; track a.title) {
+        @if (a.link) {
+          <a class="row cert" [href]="a.link" target="_blank" rel="noopener"
+             [attr.aria-label]="'View proof: ' + a.title + ' — opens in a new tab'">
+            <div class="row-main">
+              <span class="row-title">
+                {{ a.title }}
+                <svg class="ext" viewBox="0 0 24 24" width="13" height="13" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                  <path d="M7 17 17 7M9 7h8v8"/>
+                </svg>
+              </span>
+              <span class="row-sub">{{ a.org }} · <span class="verify mono">view</span></span>
+            </div>
+            <span class="year mono">{{ a.when }}</span>
+          </a>
+        } @else {
+          <div class="row">
+            <div class="row-main">
+              <span class="row-title">{{ a.title }}</span>
+              <span class="row-sub">{{ a.org }}</span>
+            </div>
+            <span class="year mono">{{ a.when }}</span>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>

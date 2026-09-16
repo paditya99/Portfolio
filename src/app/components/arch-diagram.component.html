@@ -1,0 +1,104 @@
+<div class="arch-wrap" (keydown)="onDocKey($event)">
+  <!-- flow selector (editor tabs) + arrow-direction legend -->
+  <div class="flow-head">
+    <div class="flow-tabs" role="tablist" aria-label="Architecture flow">
+      @for (f of flows; track f.id) {
+        <button
+          type="button" role="tab" class="flow-tab"
+          [class.is-active]="f.id === activeFlowId()"
+          [attr.aria-selected]="f.id === activeFlowId()"
+          (click)="setFlow(f.id)">
+          <span class="dot" [attr.data-flow]="f.id"></span>{{ f.name }}
+        </button>
+      }
+    </div>
+    <p class="flow-legend mono" aria-hidden="true">
+      <span class="lg"><span class="flow-dot"></span> live data flow</span>
+      <span class="lg"><span class="swatch sw-compute"></span> compute</span>
+      <span class="lg"><span class="swatch sw-data"></span> data</span>
+    </p>
+  </div>
+
+  <figure class="arch" role="img" [attr.aria-label]="ariaLabel()">
+    <svg [attr.viewBox]="'0 0 ' + W + ' ' + H" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="edgeGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="var(--teal)" stop-opacity=".18"/>
+          <stop offset="1" stop-color="var(--amber)" stop-opacity=".6"/>
+        </linearGradient>
+      </defs>
+
+      <!-- edges — direction is carried by the travelling packets + narration -->
+      <g class="edges" fill="none">
+        @for (e of edges(); track e.id) {
+          <path [attr.id]="e.id" [attr.d]="e.d"
+                class="edge-base" [class.is-active]="activeEdges().has(e.id)"/>
+          <path [attr.d]="e.d"
+                class="edge-flow" [class.is-active]="activeEdges().has(e.id)"/>
+        }
+      </g>
+
+      <!-- travelling packets -->
+      @if (animate()) {
+        <g class="packets">
+          @for (e of edges(); track e.id) {
+            <circle r="3.6" class="packet" [class.is-active]="activeEdges().has(e.id)">
+              <animateMotion [attr.dur]="e.dur + 's'" [attr.begin]="e.delay + 's'"
+                repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+                <mpath [attr.href]="'#' + e.id"/>
+              </animateMotion>
+              <animate attributeName="opacity" [attr.dur]="e.dur + 's'" [attr.begin]="e.delay + 's'"
+                repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.18;0.82;1" calcMode="linear"/>
+            </circle>
+          }
+        </g>
+      }
+
+      <!-- nodes -->
+      <g class="nodes">
+        @for (n of nodes(); track n.id) {
+          <g [class]="'node kind-' + n.kind"
+             [class.is-lit]="litSet().has(n.id)"
+             [class.is-dim]="!litSet().has(n.id)"
+             [class.is-open]="openId() === n.id"
+             [attr.transform]="'translate(' + (n.cx - n.w / 2) + ',' + (n.cy - boxH / 2) + ')'"
+             role="button" tabindex="0"
+             [attr.aria-label]="n.label + ' — ' + n.sub + '. Open explanation.'"
+             (click)="open(n.id)" (keydown)="onNodeKey($event, n.id)"
+             (mouseenter)="onEnter(n.id)" (mouseleave)="onLeave()">
+            <rect [attr.width]="n.w" [attr.height]="boxH" rx="10" class="node-box"/>
+            <rect x="0" y="0" [attr.width]="4" [attr.height]="boxH" rx="2" class="node-tab"/>
+            <text [attr.x]="14" [attr.y]="24" class="node-label">{{ n.label }}</text>
+            <text [attr.x]="14" [attr.y]="42" class="node-sub">{{ n.sub }}</text>
+          </g>
+        }
+      </g>
+    </svg>
+  </figure>
+
+  <!-- narration -->
+  <div class="flow-caption" aria-live="polite">
+    <span class="step-index mono" aria-hidden="true">{{ stepBadge() }}</span>
+    <p class="step-text">{{ caption() }}</p>
+  </div>
+
+  <!-- node explanation -->
+  @if (openNode(); as n) {
+    <div class="node-dialog-scrim" (click)="close()"></div>
+    <div class="node-dialog" role="dialog" aria-modal="true"
+         [attr.aria-labelledby]="'nd-title-' + n.id">
+      <button #closeBtn type="button" class="nd-close" (click)="close()" aria-label="Close explanation">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+
+      <p class="nd-kind mono" [attr.data-kind]="n.kind">{{ n.kind }}</p>
+      <h4 class="nd-title" [id]="'nd-title-' + n.id">{{ n.label }}</h4>
+      <p class="nd-sub mono">{{ n.sub }}</p>
+      <p class="nd-body">{{ n.detail }}</p>
+      <p class="nd-foot mono">{{ flow().name }} · press Esc to close</p>
+    </div>
+  }
+</div>

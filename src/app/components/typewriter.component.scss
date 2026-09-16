@@ -1,0 +1,3 @@
+.tw { font-family: var(--font-mono); }
+/* caret is the shared global .blink-caret; nudge it away from the text */
+.blink-caret { margin-left: 2px; }

@@ -1,0 +1,31 @@
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); }
+.col-h { color: var(--text-3); font-size: .82rem; margin-bottom: 1rem; }
+
+.row {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  padding: .95rem 0; border-top: 1px solid var(--border);
+}
+/* the first row under a column heading needs no divider (`:first-of-type` would
+   mis-fire now that a column can mix linked <a> and plain <div> rows) */
+.col-h + .row { border-top: none; }
+.row-main { display: flex; flex-direction: column; }
+.row-title { font-weight: 600; color: var(--text); }
+.row-sub { color: var(--text-2); font-size: .9rem; }
+.row-side { display: flex; flex-direction: column; align-items: flex-end; gap: .1rem; }
+.score { color: var(--teal); font-size: .82rem; }
+.year { color: var(--text-3); font-size: .82rem; }
+
+/* clickable, verifiable certificate rows */
+.cert { text-decoration: none; border-radius: 8px; transition: background .2s var(--ease); }
+.cert .row-title {
+  display: inline-flex; align-items: center; gap: .4rem;
+  transition: color .2s var(--ease);
+}
+.cert .ext { color: var(--text-3); transition: color .2s var(--ease), transform .2s var(--ease-out); }
+.verify { color: var(--accent); font-size: .78rem; }
+.cert:hover .row-title { color: var(--accent); }
+.cert:hover .ext { color: var(--accent); transform: translate(2px, -2px); }
+.cert:hover .year { color: var(--text-2); }
+.cert:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+
+@media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
